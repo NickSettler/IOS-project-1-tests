@@ -1,0 +1,16 @@
+./corona regions osoby-short.csv osoby-short.csv.bz2 osoby-short.csv.gz
+CZ010: 1880
+CZ020: 790
+CZ031: 192
+CZ032: 219
+CZ041: 199
+CZ042: 237
+CZ051: 129
+CZ052: 153
+CZ053: 173
+CZ063: 131
+CZ064: 359
+CZ071: 521
+CZ072: 288
+CZ080: 678
+None: 48

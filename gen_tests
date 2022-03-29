@@ -1,0 +1,195 @@
+#!/usr/bin/env bash
+
+usage() {
+  echo "Usage: $0 [OPTIONS]"
+  echo "  -h, --help                  Print this help"
+  echo "  -a, --after                 Set after date"
+  echo "  -b, --before                Set before date"
+  echo "  -f, --file, --files         Set files to use for tests generation"
+  echo "                              (example: '-f file1.csv file2.csv')"
+  echo "  -c, --command, --commands   Set commands to use for tests generation"
+  echo "                              (example: '-c infected age merge')"
+  echo "                              To use all commands, use 'all'"
+  echo "  -s, --script                Set script to use for tests generation"
+  echo "  -o, --output                Set output directory"
+  echo "  -t, --task                  Use tests supplied in task"
+}
+
+PREVIOUS_ARG=
+ALLOWED_ARGS=(
+  -h
+  --help
+  -a
+  --after
+  -b
+  --before
+  -f
+  --file
+  --files
+  -c
+  --command
+  --commands
+  -s
+  --script
+  -o
+  --output
+  -t
+  --task
+)
+
+ALLOWED_COMMANDS=("infected" "merge" "gender" "age" "daily" "monthly" "yearly" "countries" "districts" "regions")
+COMMANDS=("infected" "merge" "gender" "age" "daily" "monthly" "yearly" "countries" "districts" "regions")
+
+AFTER="2020-03-20"
+BEFORE="2020-03-22"
+FILES="osoby-short.csv osoby-short.csv.bz2 osoby-short.csv.gz"
+SCRIPT="corona"
+OUTPUT_DIR="tests"
+
+USE_TASK=
+TASK_FILES="osoby.csv"
+
+contains() {
+  local e match="$1"
+  shift
+  for e; do [[ "$e" == "$match" ]] && return 0; done
+  return 1
+}
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+  -h | --help)
+    usage
+    exit 0
+    ;;
+  -a | --after)
+    if [[ "$2" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+      AFTER="$2"
+    else
+      echo "Invalid after date: $2"
+      exit 1
+    fi
+    PREVIOUS_ARG="$1"
+    shift
+    ;;
+  -b | --before)
+    if [[ "$2" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+      BEFORE="$2"
+    else
+      echo "Invalid before date: $2"
+      exit 1
+    fi
+    PREVIOUS_ARG="$1"
+    shift
+    ;;
+  -f | --file | --files)
+    FILES=()
+    PREVIOUS_ARG="$1"
+    shift
+    ;;
+  -c | --command | --commands)
+    if [[ -z "$2" ]]; then
+      echo "Missing commands"
+      exit 1
+    fi
+    if [[ "$2" == "all" ]]; then
+      COMMANDS=("${ALLOWED_COMMANDS[@]}")
+      shift 2
+    else
+      COMMANDS=()
+      PREVIOUS_ARG="$1"
+      shift
+    fi
+    ;;
+  -s | --script)
+    if [[ -z "$2" ]]; then
+      echo "Missing script"
+      exit 1
+    fi
+    SCRIPT="$2"
+    PREVIOUS_ARG="$1"
+    shift
+    ;;
+  -o | --output)
+    if [[ -z "$2" ]]; then
+      echo "Missing output directory"
+      exit 1
+    fi
+    OUTPUT_DIR="$2"
+    PREVIOUS_ARG="$1"
+    shift
+    ;;
+  -t | --task)
+    USE_TASK=1
+    PREVIOUS_ARG="$1"
+    shift
+    ;;
+  *)
+    if [[ -z "$PREVIOUS_ARG" ]]; then
+      echo "Unknown argument: $1"
+      usage
+      exit 1
+    fi
+
+    if [[ "$PREVIOUS_ARG" == "-f" ]] || [[ "$PREVIOUS_ARG" == "--file" ]] || [[ "$PREVIOUS_ARG" == "--files" ]]; then
+      FILES+=("$1")
+    elif [[ "$PREVIOUS_ARG" == "-c" ]] || [[ "$PREVIOUS_ARG" == "--command" ]] || [[ "$PREVIOUS_ARG" == "--commands" ]]; then
+      if contains "$1" "${ALLOWED_COMMANDS[@]}"; then
+        COMMANDS+=("$1")
+      else
+        echo "Command '$1' is not allowed"
+        exit 1
+      fi
+    else
+      PREVIOUS_ARG=
+    fi
+
+    shift
+    ;;
+  esac
+done
+
+for COMMAND in "${COMMANDS[@]}"; do
+  cmd1="./$SCRIPT $COMMAND ${FILES[*]} | (echo ./$SCRIPT $COMMAND ${FILES[*]} && cat) > $OUTPUT_DIR/$COMMAND\"_1.txt\""
+  cmd2="./$SCRIPT -a $AFTER $COMMAND ${FILES[*]} | (echo ./$SCRIPT -a $AFTER $COMMAND ${FILES[*]} && cat) > $OUTPUT_DIR/$COMMAND\"_2.txt\""
+  cmd3="./$SCRIPT -b $BEFORE $COMMAND ${FILES[*]} | (echo ./$SCRIPT -b $BEFORE $COMMAND ${FILES[*]} && cat) > $OUTPUT_DIR/$COMMAND\"_3.txt\""
+  cmd4="./$SCRIPT -a $AFTER -b $BEFORE $COMMAND ${FILES[*]} | (echo ./$SCRIPT -a $AFTER -b $BEFORE $COMMAND ${FILES[*]} && cat) > $OUTPUT_DIR/$COMMAND\"_4.txt\""
+
+  echo "$cmd1"
+  eval "$cmd1"
+  echo "$cmd2"
+  eval "$cmd2"
+  echo "$cmd3"
+  eval "$cmd3"
+  echo "$cmd4"
+  eval "$cmd4"
+done
+
+if [[ "$USE_TASK" -eq "1" ]]; then
+  TASK_TESTS=(
+    "cat $TASK_FILES | head -n 5 | ./$SCRIPT"
+    "./$SCRIPT infected $TASK_FILES"
+    "cat $TASK_FILES | ./$SCRIPT gender"
+    "cat $TASK_FILES | ./$SCRIPT daily"
+    "cat $TASK_FILES | ./$SCRIPT monthly"
+    "cat $TASK_FILES | ./$SCRIPT yearly"
+    "./$SCRIPT countries $TASK_FILES"
+    "./$SCRIPT -g M $TASK_FILES | head -n 6"
+    "cat /dev/null | ./$SCRIPT"
+    "./$SCRIPT -s daily $TASK_FILES"
+    "./$SCRIPT -s monthly $TASK_FILES"
+    "./$SCRIPT -s 20 yearly $TASK_FILES"
+    "./$SCRIPT districts $TASK_FILES"
+    "./$SCRIPT regions $TASK_FILES"
+    "./$SCRIPT age $TASK_FILES"
+  )
+
+  for i in "${!TASK_TESTS[@]}"; do
+    cmd="${TASK_TESTS[$i]}"
+    filename="$OUTPUT_DIR/task_tests_$i.txt"
+
+    cmd="$cmd | (echo \"$cmd\" && cat) > $filename"
+    echo "$cmd"
+    eval "$cmd"
+  done
+fi

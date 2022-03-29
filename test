@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+
+usage() {
+  echo "Usage: $0 [OPTIONS]"
+  echo "  -h, --help                  Print this help"
+  echo "  -s, --script                Set script to use for tests"
+  echo "  -t, --task                  Use tests supplied in task"
+}
+
+FILES=()
+SCRIPT=
+USE_TASK=
+
+contains() {
+  local e match="$1"
+  shift
+  for e; do [[ "$e" == "$match" ]] && return 0; done
+  return 1
+}
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+  -h | --help)
+    usage
+    exit 0
+    ;;
+  -s | --script)
+    SCRIPT="$2"
+    shift 2
+    ;;
+  -t | --task)
+    USE_TASK=1
+    shift
+    ;;
+  *)
+    echo "Unknown argument: $1"
+    usage
+    exit 1
+    ;;
+  esac
+done
+
+while IFS= read -r -d '' FILE
+do
+  FILES+=("$FILE")
+done < <(find tests -name '*.txt' -print0)
+
+for FILE in "${FILES[@]}"; do
+  ((! USE_TASK)) && [[ "$FILE" =~ ^tests\/task_tests_.*.txt$ ]] && continue
+
+  cmd=$(head -n 1 "$FILE")
+  if [[ -n "$SCRIPT" ]]; then
+    cmd=$(echo "$cmd" | sed "s/\.\/corona/\.\/$SCRIPT/g")
+  fi
+  expected_output=$(sed 1d "$FILE")
+
+  output=$(eval "$cmd")
+
+  if [ "$output" != "$expected_output" ]; then
+    filename=$(basename -- "$FILE")
+    filename="${filename%.*}"
+
+    echo "Test failed: $FILE"
+    diff -u -i <(echo "$output") <(echo "$expected_output") > "logs/$filename.diff"
+    cmp <(echo "$output") <(echo "$expected_output")
+  else
+    echo "Test passed: $FILE"
+  fi
+done

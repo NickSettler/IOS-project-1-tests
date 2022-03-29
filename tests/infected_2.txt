@@ -1,0 +1,2 @@
+./corona -a 2020-03-20 infected osoby-short.csv osoby-short.csv.bz2 osoby-short.csv.gz
+3689

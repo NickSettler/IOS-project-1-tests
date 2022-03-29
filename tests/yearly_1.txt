@@ -1,0 +1,3 @@
+./corona yearly osoby-short.csv osoby-short.csv.bz2 osoby-short.csv.gz
+2020: 5970
+None: 27
