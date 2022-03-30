@@ -4,10 +4,12 @@ usage() {
   echo "Usage: $0 [OPTIONS]"
   echo "  -h, --help                  Print this help"
   echo "  -s, --script                Set script to use for tests"
+  echo "  -d, --dir                   Set directory where the tests are located"
   echo "  -t, --task                  Use tests supplied in task"
 }
 
 FILES=()
+DIRECTORY=
 SCRIPT=
 USE_TASK=
 
@@ -26,6 +28,10 @@ while [ "$#" -gt 0 ]; do
     ;;
   -s | --script)
     SCRIPT="$2"
+    shift 2
+    ;;
+  -d | --dir)
+    DIRECTORY="$2"
     shift 2
     ;;
   -t | --task)
@@ -47,6 +53,14 @@ done < <(find tests -name '*.txt' -print0)
 
 for FILE in "${FILES[@]}"; do
   ((! USE_TASK)) && [[ "$FILE" =~ ^tests\/task_tests_.*.txt$ ]] && continue
+
+  if [[ -n "$DIRECTORY" ]]; then
+    FILE=$(echo "$FILE" | sed "s/tests\//$DIRECTORY\//g")
+  fi
+
+  if ! [[ -s "$FILE" ]]; then
+    continue
+  fi
 
   cmd=$(head -n 1 "$FILE")
   if [[ -n "$SCRIPT" ]]; then
