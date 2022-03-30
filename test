@@ -13,6 +13,10 @@ DIRECTORY=
 SCRIPT=
 USE_TASK=
 
+TOTAL=0
+PASSED=0
+FAILED=0
+
 contains() {
   local e match="$1"
   shift
@@ -67,6 +71,8 @@ for FILE in "${FILES[@]}"; do
     continue
   fi
 
+  TOTAL=$((TOTAL + 1))
+
   cmd=$(head -n 1 "$FILE")
   if [[ -n "$SCRIPT" ]]; then
     cmd=$(echo "$cmd" | sed "s/\.\/corona/\.\/$SCRIPT/g")
@@ -76,6 +82,8 @@ for FILE in "${FILES[@]}"; do
   output=$(eval "$cmd")
 
   if [ "$output" != "$expected_output" ]; then
+    FAILED=$((FAILED + 1))
+
     filename=$(basename -- "$FILE")
     filename="${filename%.*}"
 
@@ -83,6 +91,16 @@ for FILE in "${FILES[@]}"; do
     diff -u -i <(echo "$output") <(echo "$expected_output") > "logs/$filename.diff"
     cmp <(echo "$output") <(echo "$expected_output")
   else
+    PASSED=$((PASSED + 1))
+
     echo "Test passed: $FILE"
   fi
 done
+
+echo "----------------------------------------"
+echo "---------------STATISTICS---------------"
+echo "----------------------------------------"
+echo "Total: $TOTAL"
+echo "Passed: $PASSED ($((PASSED * 100 / TOTAL))%)"
+echo "Failed: $FAILED ($((FAILED * 100 / TOTAL))%)"
+echo "----------------------------------------"
