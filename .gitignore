@@ -3,7 +3,8 @@
 logs/*
 !logs/.gitkeep
 
+corona
+
 osoby*
-!osoby.csv
 !osoby-short.csv*
 infected-jan22/
