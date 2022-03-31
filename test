@@ -89,7 +89,7 @@ for FILE in "${FILES[@]}"; do
 
     echo "Test failed: $FILE"
     diff -u -i <(echo "$output") <(echo "$expected_output") > "logs/$filename.diff"
-    cmp <(echo "$output") <(echo "$expected_output")
+    echo "Diff saved to logs/$filename.diff"
   else
     PASSED=$((PASSED + 1))
 
