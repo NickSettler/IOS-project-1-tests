@@ -60,6 +60,8 @@ do
   FILES+=("$FILE")
 done < <(find tests -name '*.txt' -print0)
 
+rm -f logs/*.diff
+
 for FILE in "${FILES[@]}"; do
   ((! USE_TASK)) && [[ "$FILE" =~ ^tests\/task_tests_.*.txt$ ]] && continue
 
