@@ -1,16 +1,16 @@
-./corona -a 2020-03-20 -b 2020-03-22 regions osoby-short.csv osoby-short.csv.bz2 osoby-short.csv.gz
-CZ010: 377
-CZ020: 173
-CZ031: 33
-CZ032: 3
-CZ041: 42
-CZ042: 36
-CZ051: 18
-CZ052: 12
-CZ053: 36
-CZ063: 33
-CZ064: 108
-CZ071: 109
-CZ072: 54
-CZ080: 150
+./corona -a 2020-03-20 regions osoby-short.csv osoby-short.csv.bz2 osoby-short.csv.gz
+CZ010: 1100
+CZ020: 461
+CZ031: 135
+CZ032: 165
+CZ041: 114
+CZ042: 132
+CZ051: 111
+CZ052: 105
+CZ053: 123
+CZ063: 96
+CZ064: 204
+CZ071: 340
+CZ072: 144
+CZ080: 456
 None: 3
