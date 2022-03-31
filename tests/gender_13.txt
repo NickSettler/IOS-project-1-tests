@@ -1,0 +1,4 @@
+./corona -b 2020-03-22 gender osoby-short.csv osoby-short.csv.bz2 osoby-short.csv.gz
+M: 1980
+Z: 1502
+None: 13

@@ -1,0 +1,3 @@
+./corona -b 2020-03-22 -s 20 monthly osoby-short.csv osoby-short.csv.bz2 osoby-short.csv.gz
+2020-03: ####################
+None: 

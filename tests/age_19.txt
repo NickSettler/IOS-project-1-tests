@@ -1,0 +1,14 @@
+./corona -a 2020-03-20 -b 2020-03-22 -s age osoby-short.csv osoby-short.csv.bz2 osoby-short.csv.gz
+0-5   : 
+6-15  : 
+16-25 : 
+26-35 : 
+36-45 : 
+46-55 : 
+56-65 : 
+66-75 : 
+76-85 : 
+86-95 : 
+96-105: 
+>105  : 
+None  : 

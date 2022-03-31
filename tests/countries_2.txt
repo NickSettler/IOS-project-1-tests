@@ -1,32 +1,36 @@
-./corona -g M countries osoby-short.csv osoby-short.csv.bz2 osoby-short.csv.gz
-AE: 3
-AT: 204
-BE: 12
-CA: 6
-CH: 24
-CM: 3
-CR: 3
-DE: 51
-DO: 9
-EG: 3
-ES: 15
-FR: 27
-GB: 39
-GR: 3
-HU: 9
-ID: 3
-IE: 6
-IL: 6
-IT: 219
-MT: 3
-NL: 6
-OM: 3
-PH: 3
-PL: 3
-SA: 3
-SE: 6
-SI: 3
-SK: 6
-TH: 6
-TR: 18
-US: 27
+./corona -s countries osoby-short.csv osoby-short.csv.bz2 osoby-short.csv.gz
+AE: 
+AR: 
+AT: ###
+BE: 
+CA: 
+CH: 
+CM: 
+CR: 
+DE: 
+DK: 
+DO: 
+EG: 
+ES: 
+FR: 
+GB: 
+GR: 
+HU: 
+ID: 
+IE: 
+IL: 
+IT: ####
+MT: 
+MU: 
+NL: 
+OM: 
+PH: 
+PL: 
+PT: 
+SA: 
+SE: 
+SI: 
+SK: 
+TH: 
+TR: 
+US: 

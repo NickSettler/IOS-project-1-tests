@@ -1,18 +1,23 @@
-./corona -a 2020-03-22 -g M countries osoby-short.csv osoby-short.csv.bz2 osoby-short.csv.gz
-AT: 60
-CA: 3
-CH: 12
-DE: 18
-DO: 3
-ES: 6
-FR: 12
-GB: 17
-HU: 3
+./corona -a 2020-03-20 countries osoby-short.csv osoby-short.csv.bz2 osoby-short.csv.gz
+AR: 3
+AT: 159
+CA: 6
+CH: 30
+DE: 39
+DK: 6
+DO: 15
+ES: 15
+FR: 27
+GB: 32
+HU: 9
 IL: 3
-IT: 24
+IT: 75
+MU: 3
+NL: 3
 OM: 3
 PH: 3
 SI: 3
+SK: 3
 TH: 3
-TR: 15
-US: 12
+TR: 24
+US: 18

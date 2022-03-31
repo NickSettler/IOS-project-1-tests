@@ -1,0 +1,6 @@
+./corona -a 2020-03-22 -g Z daily osoby-short.csv osoby-short.csv.bz2 osoby-short.csv.gz
+2020-03-22: 141
+2020-03-23: 180
+2020-03-24: 270
+2020-03-25: 435
+2020-03-26: 369

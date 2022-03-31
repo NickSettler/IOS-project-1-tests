@@ -1,2 +1,2 @@
-./corona -g M infected osoby-short.csv osoby-short.csv.bz2 osoby-short.csv.gz
-3228
+./corona -s infected osoby-short.csv osoby-short.csv.bz2 osoby-short.csv.gz
+5997

@@ -1,0 +1,2 @@
+./corona -a 2020-03-22 -g Z infected osoby-short.csv osoby-short.csv.bz2 osoby-short.csv.gz
+1395

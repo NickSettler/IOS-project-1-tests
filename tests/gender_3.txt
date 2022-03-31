@@ -1,2 +1,4 @@
-./corona -g Z gender osoby-short.csv osoby-short.csv.bz2 osoby-short.csv.gz
-Z: 2756
+./corona -s 20 gender osoby-short.csv osoby-short.csv.bz2 osoby-short.csv.gz
+M: ####################
+Z: #################
+None: 

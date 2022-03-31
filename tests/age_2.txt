@@ -1,14 +1,14 @@
-./corona -g M age osoby-short.csv osoby-short.csv.bz2 osoby-short.csv.gz
-0-5   : 66
-6-15  : 132
-16-25 : 352
-26-35 : 560
-36-45 : 693
-46-55 : 602
-56-65 : 434
-66-75 : 254
-76-85 : 75
-86-95 : 41
-96-105: 3
->105  : 0
-None  : 16
+./corona -s age osoby-short.csv osoby-short.csv.bz2 osoby-short.csv.gz
+0-5   : 
+6-15  : 
+16-25 : 
+26-35 : 
+36-45 : 
+46-55 : 
+56-65 : 
+66-75 : 
+76-85 : 
+86-95 : 
+96-105: 
+>105  : 
+None  : 
