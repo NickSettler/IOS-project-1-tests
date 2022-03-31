@@ -56,6 +56,15 @@ contains() {
   return 1
 }
 
+index() {
+  local i=0
+  for element in "${@:2}"; do
+    [[ "$element" == "$1" ]] && echo "$i" && return
+    ((i++))
+  done
+  echo -1
+}
+
 while [ "$#" -gt 0 ]; do
   case "$1" in
   -h | --help)
@@ -149,20 +158,32 @@ while [ "$#" -gt 0 ]; do
   esac
 done
 
-for COMMAND in "${COMMANDS[@]}"; do
-  cmd1="./$SCRIPT $COMMAND ${FILES[*]} | (echo ./$SCRIPT $COMMAND ${FILES[*]} && cat) > $OUTPUT_DIR/$COMMAND\"_1.txt\""
-  cmd2="./$SCRIPT -a $AFTER $COMMAND ${FILES[*]} | (echo ./$SCRIPT -a $AFTER $COMMAND ${FILES[*]} && cat) > $OUTPUT_DIR/$COMMAND\"_2.txt\""
-  cmd3="./$SCRIPT -b $BEFORE $COMMAND ${FILES[*]} | (echo ./$SCRIPT -b $BEFORE $COMMAND ${FILES[*]} && cat) > $OUTPUT_DIR/$COMMAND\"_3.txt\""
-  cmd4="./$SCRIPT -a $AFTER -b $BEFORE $COMMAND ${FILES[*]} | (echo ./$SCRIPT -a $AFTER -b $BEFORE $COMMAND ${FILES[*]} && cat) > $OUTPUT_DIR/$COMMAND\"_4.txt\""
+OPTIONS=(
+  "#CMD#"
+  "-g M #CMD#"
+  "-g Z #CMD#"
+  "-a $AFTER #CMD#"
+  "-a $AFTER -g M #CMD#"
+  "-a $AFTER -g Z #CMD#"
+  "-b $BEFORE #CMD#"
+  "-a $BEFORE -g M #CMD#"
+  "-a $BEFORE -g Z #CMD#"
+  "-a $AFTER -b $BEFORE #CMD#"
+  "-a $AFTER -b $BEFORE -g M #CMD#"
+  "-a $AFTER -b $BEFORE -g Z #CMD#"
+)
 
-  echo "$cmd1"
-  eval "$cmd1"
-  echo "$cmd2"
-  eval "$cmd2"
-  echo "$cmd3"
-  eval "$cmd3"
-  echo "$cmd4"
-  eval "$cmd4"
+for COMMAND in "${COMMANDS[@]}"; do
+  for OPTION in "${OPTIONS[@]}"; do
+    OPTION_INDEX=$(( $(index "$OPTION" "${OPTIONS[@]}")+1 ))
+    OPTION=${OPTION//"#CMD#"/"$COMMAND"}
+
+    pure_cmd="./$SCRIPT $OPTION ${FILES[*]}"
+    cmd="$pure_cmd | (echo $pure_cmd && cat) > $OUTPUT_DIR/$COMMAND\"_$OPTION_INDEX.txt\""
+
+    echo "$cmd"
+    eval "$cmd"
+  done
 done
 
 if [[ "$USE_TASK" -eq "1" ]]; then
